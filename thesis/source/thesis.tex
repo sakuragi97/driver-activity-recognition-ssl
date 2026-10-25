@@ -1,0 +1,125 @@
+\documentclass[a4paper,openany]{scrbook}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{hyperref}
+\usepackage{libertine}
+\usepackage{ifthen}
+\usepackage{fancyhdr}
+%\usepackage{titlesec}
+\usepackage{changepage}
+\usepackage{subfigure}
+\usepackage[subfigure]{tocloft}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\newcommand\Tau{\mathcal{T}}% Caligraphic T for example
+
+% Titles for the built-in lists of figures and tables
+\renewcommand{\listfigurename}{List of figures}
+\renewcommand{\listtablename}{List of tables}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Replace these values
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\thesistitleEN}{ \mbox{\huge Enhancing Vehicle Interior Action Recognition}
+\begin{adjustwidth}{0.55cm}{0cm} using Contrastive Self-Supervised Learning\\
+with 3D Human Skeleton Representations
+\end{adjustwidth} 
+}
+\newcommand{\student}{Yasser El Bachiri}
+\newcommand{\matrnr}{12102782}
+\newcommand{\submissiondate}{20.\ September 2023}
+\newcommand{\supervisor}{Prof.~Dr.~Patrick Glauner\\
+Email:\\ patrick.glauner@th-deg.de}
+\newcommand{\secsupervisor}{David Lerch\\
+Email:\\ david.lerch@iosb.fraunhofer.de} % Unset this variable if no second supervisor is required
+\newcommand{\faculty}{Applied Computer Science}
+
+% Select your course of studies here
+%\newcommand{\studies}{Bachelor Cybersecurity}
+%\newcommand{\studies}{Bachelor Künstliche Intelligenz}
+\newcommand{\studies}{Master Artificial Intelligence and Data Science}
+%\newcommand{\studies}{Master Angewandte Informatik}
+%\newcommand{\studies}{Bachelor Elektro- und Informationstechnik}
+%\newcommand{\studies}{Master Elektro- und Informationstechnik}
+%\newcommand{\studies}{Bachelor Medientechnik}
+%\newcommand{\studies}{Master Medientechnik}
+%\newcommand{\studies}{Master of Applied Research}
+
+% Select the targeted degree here
+%\newcommand{\degree}{M.Sc. Artificial Intelligence and Data Science}
+%\newcommand{\degree}{Master of Engineering (M.Eng.)}
+\newcommand{\degree}{Master of Science (M.Sc.)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+\begin{document}
+\pagestyle{headings}
+\pagenumbering{roman}
+\input{title}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Over the past few years, a mounting alarm regarding the rising fatalities attributed to driver distraction-related car accidents has been highlighted the urgency of developing advanced action recognition systems within the car interior. This master thesis addresses the pressing issue of the need for advanced action recognition systems in the car interior emphasizing the potential of examining human behavior in the vehicle's interior in light of the increasing adoption of automation for better driver adaptation, human-vehicle communication, and safety. We investigate two self-supervised learning approaches, DINO with STTFormer and PSTL with ST-GCN, using 3D human skeleton representations on NTU RGB+D and Drive\&Act datasets. Extensive experiments and evaluations, including linear and k-NN assessments, demonstrate the competitive performance of  PSTL with ST-GCN, while revealing challenges in the Drive\&Act dataset and the complexities of self-supervised learning convergence. This research not only contributes to the advancement of action recognition systems for safer driving and dynamic adaptation but also underscores the significance of self-supervised learning in interpreting and improving human activities inside vehicles, facilitating the development of more intuitive and responsive autonomous driving systems.\newline
+\newline
+\textbf{Keywords:} Self-Supervised Learning, Action Recognition, Contrastive Learning, 3D Skeleton Representations.
+\newpage
+
+\tableofcontents
+\newpage
+
+\chapter*{}
+\listoffigures
+\addcontentsline{toc}{chapter}{List of figures}
+\let\cleardoublepage\clearpage
+
+\let\cleardoublepage\clearpage
+\chapter*{}
+\addcontentsline{toc}{chapter}{List of tables}
+\listoftables
+\let\cleardoublepage\clearpage
+
+\chapter*{List of acronyms}
+\addcontentsline{toc}{chapter}{List of acronyms}
+
+\begin{table}[htbp]
+\centering
+\caption{Acronyms}
+\begin{tabular}{ll}
+\toprule
+Acronym & Full Name \\
+\midrule
+    SSL & Self-Supervised Learning \\
+    CNN & Convolutional Neural Network \\
+    GCN & Graph Convolutional Network \\
+    RNN & Recurrent Neural Network \\
+    SVM & Support Vector Machine \\
+    RGB & Red Green Blue \\
+    N-IR & Near-Infrared \\
+    WHO & World Health Organization \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\cleardoublepage%
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\input{chapter0}
+\input{chapter1}
+\input{chapter2}
+\input{chapter3}
+\input{chapter4}
+\input{chapter5}
+%\input{ChapterExample}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

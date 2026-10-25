@@ -1,0 +1,108 @@
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+%\usepackage{cite}
+\overrideIEEEmargins
+\usepackage{iftex}
+\ifXeTeX % Times (ptm) is pdfLaTeX-only; use its OpenType clone under XeLaTeX/Tectonic
+  \usepackage{fontspec}
+  \setmainfont{texgyretermes}[Extension=.otf, UprightFont=*-regular, BoldFont=*-bold,
+    ItalicFont=*-italic, BoldItalicFont=*-bolditalic]
+\fi
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tikz}
+\newcommand{\xmark}{%
+\tikz[scale=0.23] {
+    \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
+    \draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
+}}
+\newcommand{\cmark}{%
+\tikz[scale=0.23] {
+    \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
+    \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
+}}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+
+%%%%%%%%%%%% own packages %%%%%%%%%%%%%%%%%%%%%%
+\usepackage{hyperref}
+\usepackage{blindtext}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{todonotes}
+\let\labelindent\relax % ieeeconf.cls already defines \labelindent, which clashes with enumitem
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage[backend=bibtex,style=ieee,mincitenames=1,maxcitenames=1,url=false]{biblatex}
+\addbibresource{references.bib}
+\newcommand{\daa}{Drive\&Act\xspace}
+% Auch Abbildung und nicht nur die Nummer wird zum Link (abgeleitet
+% aus Posting von Heiko Oberdiek (d09n5p$9md$1@news.BelWue.DE);
+% Verwendung: In \abbvref{label} ist ein Beispiel dargestellt
+\providecommand*{\figrefname}{Figure~}
+\newcommand*{\figref}[1]{%
+	\hyperref[fig:#1]{\figrefname{}}\ref{fig:#1}%
+}
+% ebenso bei Tabellen
+\providecommand*{\tabrefname}{Table~}
+\newcommand*{\tabref}[1]{%
+	\hyperref[tab:#1]{\tabrefname{}}\ref{tab:#1}%
+}
+% und Abschnitten
+\providecommand*{\secrefname}{Section~}
+\newcommand*{\secref}[1]{%
+	\hyperref[sec:#1]{\secrefname{}}\ref{sec:#1}%
+}
+% und Kapiteln
+\providecommand*{\chaprefname}{Chapter~}
+\newcommand*{\chapref}[1]{%
+	\hyperref[chap:#1]{\chaprefname{}}\ref{chap:#1}%
+}
+% und Appendix
+\providecommand*{\appendixrefname}{Appendix~}
+\newcommand*{\apref}[1]{%
+	\hyperref[ap:#1]{\appendixrefname{}}\ref{ap:#1}%
+}
+% equation
+% this overwrites the definition of amsmath which add the same look as the numbering
+% of the equation environment including brackets
+\providecommand*{\eqrefname}{Equation~}
+\renewcommand*{\eqref}[1]{%
+	\hyperref[eq:#1]{\eqrefname{}}\ref{eq:#1}%
+}
+%%%%%%%%%%%% own packages %%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{\LARGE \bf 3D Skeleton-based Driver Activity Recognition using Self-supervised Learning}
+
+\author{David J. Lerch$^{1,3}$ \thanks{$^{1}$ David J. Lerch, Manuel Martin and Frederik Diederichs are with the Fraunhofer IOSB, Karlsruhe, Germany
+{\tt\small \{firstname.lastname\}@iosb.fraunhofer.de}}, 
+Yasser El Bachiri$^{2}$ \thanks{$^{2}$ Yasser El Bachiri is with the Deggendorf Institute of Technology (DIT), Deggendorf, Germany {\tt\small yasser.el-bachiri@stud.th-deg.de}}, Manuel Martin$^{1}$ Frederik Diederichs$^{1}$, Rainer Stiefelhagen$^{3}$ \thanks{$^{3}$ Rainer Stiefelhagen is with the Karlsruhe Institute of Technology (KIT), Karlsruhe, Germany {\tt\small rainer.stiefelhagen@kit.edu}}}
+
+\maketitle
+
+\input{content/00_abstract}
+\input{content/01_intro}
+\input{content/02_related}
+\input{content/03_method}
+\input{content/04_eval}
+\input{content/05_results}
+\input{content/06_conclusion}
+
+\section*{Acknowledgment}
+The work has been funded under the funding codes 19A21031E, 19A21031F
+and 19A21031L by the Federal Ministry for Economic Affairs and Climate Action of Germany
+(BMWK) on the basis of a decision by the German Bundestag and by the European Union. The
+work was performed in the project KARLI (www.karli-projekt.de).
+
+\printbibliography
+
+\end{document}

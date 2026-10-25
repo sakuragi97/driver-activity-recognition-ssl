@@ -1,0 +1,145 @@
+\section{Experiments}
+We now evaluate our SkelDINO-SAM method against other baselines on skeleton-based driver activity recognition tasks. Since our method is designed for label-free pre-training, we evaluate our approach with frozen, self-supervised pre-trained, models. Only for classification, training samples are embedded for nearest neighbor search during testing. We perform ablation studies on different masking probabilities during pre-training as well as linear evaluation and fine-tuning.
+\subsection{Dataset}
+For our experiments, we evaluate our SkelDINO-SAM method on 
+%two different datasets we primarily use the NTU RGB+D \cite{Liu_2020}, a large-scale benchmark for 3D human action recognition for the purpose of achieving the first research objective which is developing and evaluating a contrastive self-supervised approach for action recognition on 3D human skeleton data. 
+the Drive\&Act \cite{drive_and_act_2019_iccv} dataset dedicated for driver behavior inside the car. We compare our method to state-of-the-art self-supervised approaches for 3D skeleton-based activity recognition.
+
+%\textbf{NTU RGB+D 60 Dataset:}
+%proposed in 2016, was captured simultaneously using three Microsoft Kinect V2 sensors. It comprises 56,000 action sequences in 60 action classes, including 40 daily actions, 9 health-related actions, and 11 mutual actions. The data was collected from 40 volunteers, and each action sequence contains the three-dimensional positions of 25 body joints per frame, as shown in ~\ref{fig:ntu_25joints}. The dataset is divided into training and test sets using two different standards: Cross-Subject (X-Sub) and Cross-View (X-View). In the Cross-Subject setting, the dataset which contains 40320 samples and 16560 samples for training and evaluation, is split based on the person ID, resulting in 20 subsets for both the training and test sets. On the other hand, the Cross-View setting containing 37920 and 18960 samples for training and evaluation, divides the dataset according to camera ID. The samples collected by cameras 2 and 3 are used for training, while those collected by camera 1 are used for testing. Notably, the three cameras have horizontal angles differing by 45° each, ensuring diverse perspectives for robust evaluation.
+
+The Drive\&Act dataset offers a comprehensive collection of driver activities and interactions inside the vehicle cabin, providing valuable insights for driver monitoring and autonomous driving systems. 
+%The dataset consists of over 9.6 million frames, recorded from six different camera views and three modalities, collected by five Near-Infrared (NIR) and three RGB-D cameras. The data was recorded using a specially equipped vehicle that was driven on public roads in Germany. The vehicle was outfitted with six synchronized cameras placed in various positions. Three NIR cameras were utilized to capture images in low-light conditions, while three RGB-D cameras were used to capture color images and depth information. The synchronization ensured that all data streams were aligned in time, providing coherent multi-modal information for each frame. 
+It includes skeleton data as one of its modalities. Specifically, the dataset includes 3D body and head pose data, which is represented as a time series of 3D rotation matrices. 
+%The skeleton data is captured using the OpenPose neural architecture, which is applied to each frame of the dataset that contains the driver's body or head.
+
+The dataset comprises a hierarchical annotation scheme, offering rich semantic information about the driver's behavior. In our experiments we focus on the so called fine-grained activities. These include 34 activities inside the vehicle cabin, such as "adjusting the radio" or "checking the rear-view mirror." Fine-grained activities offer detailed insights into the driver's interactions and behaviors.
+%\begin{itemize}
+    %\item \textbf{Coarse Tasks:} These represent high-level activities the drivers perform, such as "driving straight" or "turning left." These coarse tasks provide a broader context for understanding the driver's overall behavior.
+
+    %\item \textbf{Fine-Grained Activities:} These include more specific actions inside the vehicle cabin, such as "adjusting the radio" or "checking the rear-view mirror." Fine-grained activities offer detailed insights into the driver's interactions and behaviors.
+
+    %\item \textbf{Atomic Action Units:} This level provides detailed triplets of annotations, including the driver's current action, the object they interact with, and the location of the object. This level of granularity allows for a deep analysis of the driver's actions and intentions.
+%\end{itemize}
+
+%The Drive\&Act dataset includes an extensive set of 83 fine-grained activity classes, surpassing previous driver activity recognition datasets by 62 additional activities. This broad range of actions enables a more comprehensive understanding of driver behavior. The dataset's size, with over 9.6 million frames, provides ample data for training and evaluation, making it one of the largest and most diverse datasets for driver activity recognition.
+
+\subsection{Data Preparation and Processing}
+
+Data augmentation is a fundamental aspect of contrastive learning, and it plays a crucial role in generating diverse variations of the input skeleton sequences to enhance the model's ability to learn meaningful representations. In our pre-processing pipeline, we apply various spatial and temporal augmentations, including:
+
+\begin{itemize}
+	\item \textbf{Rotation:} An efficient spatial augmentation that randomly rotates the skeleton in all three axes. The rotation angle is in the range [0, 0.35] \si{rad}.
+	\item \textbf{Scale:} As a spatial augmentation, scaling is used. The scaling factor is in the range [0.9, 1.1].
+    \item \textbf{Spatial masking:} We randomly mask out joints in all frames. Therefore the x, y and z-coordinate of a joint is set to 0 in all frames.
+    \item \textbf{Temporal masking:} We randomly mask out frames. Therefore all joint values in a frame are set to 0.
+    \item \textbf{Gaussian noise:} We randomly add Gaussian noise with mean 0 and standard deviation 0.01 to the skeleton sequences. 
+\end{itemize}
+
+These augmentations are applied to create different variations of the skeleton sequences, enabling the model to capture diverse perspectives of the activities. This leads to more robust and more generalized representations. The rotation and scaling augmentations are used for all input streams including the original sequence. Each input stream is rotated and scaled separate.
+In addition to the ordinary augmentations described earlier we utilize weighted masking strategies such as CSM and MATM \cite{zhou2023self}.
+
+We explore the impact of balancing for the Drive\&Act dataset, considering its long-tailed distribution of activity classes. We evaluate the performance of self-supervised learning methods with comparing the recognition accuracies with and without balancing. 
+Inspired by \textcite{li2024incomplete} we implement interpolation for incomplete skeleton sequences. The interpolation is a linear interpolation where the available joint positions act as the grid points. For missing joints at the beginning and end of the skeleton sequence we repeat the first and last joint respectively.
+
+\subsection{Implementation Details}
+
+%\textbf{Data processing.} 
+%The activity classes in the Drive\&Act dataset follow a long-tailed distribution. Therefore we make use of a balanced sampling strategy to investigate the influence of balancing for the performance of self-supervised learning. For challenging 3D skeleton activity recognition datasets such as Drive\&Act it is crucial to clean the data. Inspired by \textcite{li2024incomplete} we implement interpolation for incomplete skeleton sequences. The interpolation is a linear interpolation where the available joint positions act as the grid points. For missing joints at the beginning and end of the skeleton sequence we repeat the first and last joint respectively.
+
+\textbf{Training details.} The pre-processing in general is label-free. An exception marks the balancing process, where the labels are used in the weighted sampling process. All hyperparameters are determined empirically. We use AdamW optimizer with cosine scheduler for all experiments. The learning rate is linearly ramped up during the first
+10 epochs from 0.000001 to 0.001. The weight decay is 0.01 and the batch size 256. For the transformer model we choose the number of encoder blocks to 2 and the hidden dimension to 512.
+
+\textbf{Evaluation protocols.} We calculate the overall accuracy as the mean balanced accuracy of all three splits in the Drive\&Act dataset. For the evaluation of self-supervised learning, we utilized three protocols: linear~(LEP) and 1-Nearest Neighbor~(1-NN) evaluation protocols as well as fine-tuning. For the linear evaluation, we add a linear classifier on top of the frozen pre-trained encoder and then train the classification layer on the target skeleton activity recognition dataset with an initial learning rate of 0.1. In the 1-NN evaluation, we embed all training samples and classify the test samples with a simple 1-NN classifier \cite{su2020predict}. For fine-tuning we train the backbone as well as the linear layer after LEP with an initial learning rate of 0.0001.
+
+\begin{table*}[t]
+\begin{center}
+\caption{Comparison of SkeletonBT and our SkelDINO-SAM method with different backbones. The test data is classified according to the 1-NN evaluation protocol \cite{su2020predict}. The best score is bold, and the second-best score is underlined.}
+\begin{tabular}{c c c c c c c c c}
+\toprule
+Methods & Backbones & Balancing & Interpolation & Weighted Masking & Split0 & Split1 & Split2 & Accuracy [\%]\\
+\hline
+Random baseline & & & & & & & & 2.94\\
+PSTL* \cite{zhou2023self} & ST-GCN \cite{yan2018spatial} & & & & 15.48 & 15.43 & 13.30 & 14.74\\
+\hline
+SkeletonBT* \cite{zhou2023self}  & ST-GCN \cite{yan2018spatial} & \xmark & \xmark & \xmark & 14.02 & 15.78 & 12.46 & 14.09\\
+  &  & \xmark & \xmark & \cmark & 14.29 & 15.06 & 12.59 & 13.98\\
+  &  & \xmark & \cmark  & \xmark & 14.49 & 14.69 & 12.17 & 13.78\\
+  &  & \xmark & \cmark  & \cmark  & 14.52 & 15.20 & 12.79 & 14.17\\
+  &  & \cmark  & \xmark & \xmark & 16.73 & 17.16 & 13.18 & 15.69\\
+  &  & \cmark  & \xmark & \cmark  & 16.65 & 17.07 & 12.48 & 15.40\\
+  &  & \cmark  & \cmark  & \xmark & 16.18 & 15.15 & 13.71 & 15.01\\
+  &  & \cmark  & \cmark  & \cmark  & 15.72 & 14.97 & 13.20 & 14.63\\
+  \hline
+SkeletonBT* \cite{zhou2023self} & STTFormer \cite{qiu2022spatio} & \xmark & \xmark & \xmark & 14.73 & 14.24 & 15.10 & 14.73\\
+  &  & \xmark & \xmark & \cmark  & 14.70 & 13.89 & 13.80 & 14.13\\
+  &  & \xmark & \cmark  & \xmark & 15.41 & 13.06 & 13.05 & 13.84\\
+  &  & \xmark & \cmark  & \cmark  & 15.15 & 13.18 & 13.30 & 13.88\\
+  &  & \cmark  & \xmark & \xmark & 15.94 & 15.70 & 16.06 & 15.90\\
+  &  & \cmark  & \xmark & \cmark  & 16.41 & 14.82 & 16.44 & 15.89\\
+  &  & \cmark  & \cmark  & \xmark & 16.00 & 13.51 & 13.79 & 14.43\\
+  &  & \cmark  & \cmark  & \cmark  & 16.67 & 14.51 & 14.42 & 15.20\\
+  \hline
+SkeletonBT* \cite{zhou2023self} & Transformer* \cite{vaswani2017attention} & \xmark & \xmark & \xmark & 22.44 & 23.79 & 20.67 & 22.44\\
+  &  & \xmark & \xmark & \cmark  & 23.18 & 24.10 & 20.83 & 22.70\\
+  &  & \xmark & \cmark  & \xmark & 22.86 & 22.84 & 20.93 & 22.21\\
+  &  & \xmark & \cmark  & \cmark  & 27.92 & 23.44 & 21.24 & 24.20\\
+  &  & \cmark  & \xmark & \xmark & 24.61 & 24.39 & 21.06 & 23.35\\
+  &  & \cmark  & \xmark & \cmark  & 24.55 & 20.76 & 21.04 & 22.12\\
+  &  & \cmark  & \cmark  & \xmark & 29.45 & 23.67 & 21.51 & 24.88\\
+  &  & \cmark  & \cmark  & \cmark  & 29.31 & 22.01 & 24.27 & 25.20\\
+\hline
+SkelDINO-SAM* (Ours)  & ST-GCN \cite{yan2018spatial} & \xmark & \xmark & \xmark & 13.97 & 12.44 & 12.53 & 12.98\\
+  &  & \xmark & \xmark & \cmark  & 14.53 & 13.67 & 12.63 & 13.61\\
+  &  & \xmark & \cmark  & \xmark & 12.60 & 12.79 & 14.66 & 13.35\\
+  &  & \xmark & \cmark  & \cmark  & 13.63 & 14.67 & 12.49 & 13.60\\
+  &  & \cmark  & \xmark & \xmark & 15.27 & 13.83 & 12.58 & 13.89\\
+  &  & \cmark  & \xmark & \cmark  & 16.24 & 14.15 & 13.53 & 14.64\\
+  &  & \cmark  & \cmark  & \xmark & 15.97 & 15.47 & 12.39 & 14.61\\
+  &  & \cmark  & \cmark  & \cmark  & 15.33 & 15.26 & 13.66 & 14.75\\
+\hline
+SkelDINO-SAM* (Ours) & STTFormer \cite{qiu2022spatio} & \xmark & \xmark & \xmark & 14.97 & 14.77 & 15.51 & 15.08\\
+  &  & \xmark & \xmark & \cmark  & 15.32 & 16.46 & 15.33 & 15.70\\
+  &  & \xmark & \cmark  & \xmark & 16.91 & 14.42 & 13.09 & 14.81\\
+  &  & \xmark & \cmark  & \cmark  & 16.14 & 14.92 & 13.94 & 15.00\\
+  &  & \cmark  & \xmark & \xmark & 18.29 & 18.36 & 17.69 & 18.11\\
+  &  & \cmark  & \xmark & \cmark  & 18.93 & 18.08 & 14.91 & 17.25\\
+  &  & \cmark  & \cmark  & \xmark & 18.81 & 16.81 & 16.77 & 17.46\\
+  &  & \cmark  & \cmark  & \cmark  & 20.03 & 15.67 & 20.03 & 18.58\\
+\hline
+SkelDINO-SAM* (Ours) & Transformer* \cite{vaswani2017attention} & \xmark & \xmark & \xmark & 23.47 & 25.06 & 21.21 & 23.25\\
+  &  & \xmark & \xmark & \cmark  & 23.52 & 24.99 & 21.19 & 23.23\\
+  &  & \xmark & \cmark  & \xmark & 28.71 & 23.61 & 21.59 & 24.64\\
+  &  & \xmark & \cmark  & \cmark  & 28.70 & 23.61 & 21.67 & 24.66\\
+  &  & \cmark  & \xmark & \xmark & 24.50 & 25.21 & 21.42 & 23.71\\
+  &  & \cmark  & \xmark & \cmark  & 24.50 & 25.32 & 21.58 & 23.80\\
+  &  & \cmark  & \cmark  & \xmark & 30.53 & 24.31 & 23.10 & \underline{25.98}\\
+  &  & \cmark  & \cmark  & \cmark  & 30.58 & 24.27 & 23.23 & \textbf{26.03}\\
+\hline
+\multicolumn{3}{c}{* these methods and backbones are implemented by ourselves}
+\end{tabular}
+\label{1NNLEP}
+\end{center}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\caption{Experimental results on different joint and frame masking probabilities for SkeletonDINO and SkelDINO-SAM methods with transformer backbone.}
+\begin{tabular}{c c c c}
+\toprule
+Method & Frame Mask & Joint Mask & Acc. [\%] \\
+\midrule
+SkeletonDINO & 0.80 & 0.5 & 25.87 \\
+ & 0.90 & 0.7 & 26.60 \\
+ & 0.99 & 0.9 & 26.46 \\
+\hline
+SkelDINO-SAM & 0.10 & 0.1 & 26.03 \\
+ & 0.80 & 0.5 & 26.01 \\
+ & 0.90 & 0.7 & \textbf{26.91} \\
+ & 0.99 & 0.9 & 26.77 \\
+\bottomrule
+\end{tabular}
+\label{tab:masking_results}
+\end{table}
+
+%\pagebreak

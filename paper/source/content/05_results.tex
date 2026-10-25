@@ -1,0 +1,59 @@
+\section{Results}
+
+In this section, we present the results of our experiments comparing different methods and backbones (see Table \ref{1NNLEP}) for self-supervised 3D skeleton-based activity recognition without negative samples. 
+%Our SkelDINO-SAM method with transformer backbone outperforms the state-of-the-art method PSTL \cite{zhou2023self} by 11.29\%.
+%We compare two methods: SkeletonBT and SkelDINO-SAM. We utilize three different backbones: ST-GCN, STTFormer, and Transformer. 
+%The results in Table~\ref{1NNLEP} show that our SkelDINO-SAM approach yields the best result for transformer backbone with balancing, interpolation and weighted masking. 
+In the following we determine the influence of each component on the final result. Therefore, we calculate the mean difference between the accuracies with and without a certain component.
+
+\subsection{Backbone Performance}
+
+We analyze the performance of different backbone architectures in terms of recognition accuracy. The Transformer backbone outperforms ST-GCN by 9.64\% and STTFormer by 8.27\%. These results highlight the effectiveness of leveraging transformer-based architectures for skeleton-based activity recognition tasks. SkelDINO-SAM combined with STTFormer demonstrates a 1.76\% improvement compared to SkeletonBT, while for Transformer, SkelDINO-SAM yielded a 1.02\% improvement. 
+
+\subsection{Analysis of Components}
+
+We further conduct an analysis of the components within our approach. These components include balancing, interpolation and weighted masking. We show, that all of these components contribute to a higher recognition accuracy. 
+
+\textbf{Balancing} the imbalanced Drive\&Act dataset results in a 1.35\% improvement in recognition accuracy across all methods and backbones. This indicates the importance of addressing class imbalances in the dataset preprocessing stage to improve overall model performance.
+
+\textbf{Linear interpolation} applied to the noisy 3D skeleton data leads to a 0.38\% improvement in recognition accuracy, with a more pronounced effect observed for the Transformer backbone, where the improvement reaches 1.65\%. These results underscore the importance of preprocessing techniques such as interpolation in enhancing the quality of input data for skeleton-based activity recognition models.
+
+\textbf{Weighted masking} of the 3D skeleton data leads to a modest overall improvement (0.17\%), SkelDINO-SAM exhibited a slightly higher improvement of 0.25\%. These results suggest that while masking techniques may provide some benefit, their impact on model performance may vary depending on the specific architecture and dataset characteristics.
+
+\begin{table}[t]
+\centering
+\caption{Performance comparison of linear evaluation (LEP) and fine-tuning for different backbones. All accuracy values are in~[\%]}
+\label{tab:LEP-FT}
+\begin{tabular}{c c c c c c}
+\hline
+Protocol & Backbone & Split 0 & Split 1 & Split 2 & Average \\
+\hline
+Supervised & ST-GCN & 48.46 & 43.83 & 41.81 & 44.70 \\
+ & STTFormer & 50.38 & 42.14 & 40.60 & 44.37 \\
+ & Transformer & 52.28 & 44.22 & 40.71 & 45.74 \\
+\hline
+LEP & ST-GCN & 23.13 & 21.86 & 21.27 & 22.09 \\
+ & STTFormer & 32.83 & 27.84 & 23.85 & 28.17 \\
+ & Transformer & 34.52 & 26.05 & 25.05 & 28.54 \\
+\hline
+Fine-tuning & ST-GCN & 45.39 & 44.69 & 40.52 & 43.53 \\
+ & STTFormer & 54.60 & 45.93 & 44.76 & 48.43 \\
+ & Transformer & 53.68 & 46.97 & 45.16 & 48.60 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Ablation Studies}
+
+The experimental evaluation conducted on the SkeletonDINO and SkelDINO-SAM methods involves varying probabilities of frame and joint masking. Table~\ref{tab:masking_results} summarizes the results obtained from this evaluation. Our SkelDINO-SAM outperforms the SkeletonDINO baseline for various different masking probabilities. These results demonstrate the effectiveness of SkelDINO-SAM in learning from masked data, with a notable improvement in accuracy compared to SkeletonDINO across different masking probabilities.
+Our experiments on LEP in Table \ref{tab:LEP-FT} show a notable improvement for all backbones compared to the 1-NN classification results (see Table \ref{1NNLEP}). When fine-tuned, the models with STTFormer and Transformer backbones outperform even the supervised trained models. 
+%These results underline the importance of pre-training indicating the quality of self-supervised learned features.
+
+\subsection{Discussion}
+The objective of this study is to examine the efficacy of diverse self-supervised methodologies for 3D skeleton-based activity recognition. This study compares the performance of SkeletonBT and our proposed SkelDINO-SAM method across a range of backbone architectures. 
+
+Our analysis demonstrates that the Transformer backbone consistently outperforms ST-GCN and STTFormer, thereby substantiating the efficacy of transformer-based architectures for such tasks. Moreover, when combined with SkelDINO-SAM, the Transformer backbone demonstrated the highest recognition accuracy, indicating the synergistic benefits of our proposed method and transformer-based backbones.
+
+An examination of the constituent elements of our approach reveals the enhancements attained through the application of balancing, interpolation, and weighted masking techniques. The balancing of the imbalanced dataset resulted in a notable 1.35\% improvement in activity recognition accuracy, which serves to underscore the importance of addressing class imbalances in dataset preprocessing, even in the context of self-supervised learning. Our SkelDINO-SAM method demonstrates superior performance to the state-of-the-art PSTL approach, achieving an accuracy improvement of 11.29\% on the Drive\&Act dataset.
+
+Our ablation studies conducted on SkeletonDINO and different noise levels indicate the benefit of SAM. The results of linear evaluation provide additional insights into the performance and robustness of our approach.

@@ -1,0 +1,48 @@
+\setkomafont{title}{\huge \scshape}
+\begin{titlepage}
+\begin{center}
+	{\usekomafont{subject}
+	Deggendorf Institute of Technology\\
+	University of South Bohemia\\
+	Faculty of \faculty\par}
+	\vspace{.2cm}
+{\Large Study program \studies\\}
+\vspace{6\baselineskip}
+\end{center}
+{\Huge\usekomafont{title}\thesistitleEN\par} 
+\begin{center}
+\vspace{6\baselineskip}
+
+\usekomafont{publishers}
+Master's thesis for the award of the academic degree:
+
+	\vspace{.2cm}
+	\emph{\degree}
+	\vspace{.2cm}
+
+at the Technical University of Deggendorf\\
+and University of South Bohemia
+\end{center}
+\vfill
+\parbox[t]{.5\textwidth}{\usekomafont{author}
+	Presented by:\\
+	\student\\
+	Matriculation number: \par\matrnr\par
+        Email: \par yasser.el-bachiri@stud.th-deg.de\par
+	\vspace{\baselineskip}
+        \vspace{\baselineskip}
+	At: \submissiondate\par
+}
+\hfill
+\parbox[t]{.4\textwidth}{\usekomafont{author}
+University supervisor:\\
+\supervisor%
+
+\ifthenelse{\equal{\secsupervisor}{}}{}
+{%
+\vspace{\baselineskip}
+Company supervisor:\\
+\secsupervisor%
+}}
+\end{titlepage}
+\cleardoublepage\par
